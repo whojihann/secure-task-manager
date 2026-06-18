@@ -1,59 +1,239 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Secure Task Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A secure web-based Task Management System built with Laravel as part of the IKB 21503 Secure Software Development course at Universiti Kuala Lumpur (UniKL MIIT).
 
-## About Laravel
+This project demonstrates the practical implementation of OWASP Top 10 security controls, Role-Based Access Control (RBAC), and DevSecOps practices within a fully functional web application.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Table of Contents
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [About the Project](#about-the-project)
+- [Security Features](#security-features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Setup](#environment-setup)
+- [Running the Application](#running-the-application)
+- [Default Test Accounts](#default-test-accounts)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Team Members](#team-members)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## About the Project
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The Secure Task Manager allows authenticated users to create, view, update, and delete their own tasks through a clean and straightforward interface. An Admin role sits above regular users with full visibility over all tasks, all user accounts, and the system audit log.
 
-## Laravel Sponsors
+Security was treated as a core requirement from the start — not an add-on. Every module in the application was built with OWASP guidance in mind, and the codebase was subjected to both static and dynamic security testing before submission.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Modules
 
-### Premium Partners
+- User Registration & Login (secure authentication flow)
+- Role-Based Access Control — Admin and User roles
+- Task Management (CRUD — scoped per user, full access for Admin)
+- User Profile page
+- Audit Log page (Admin only — login attempts, task changes, access violations)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Security Features
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Control | Implementation |
+|---|---|
+| Input Validation | Laravel Form Requests with whitelisting and regex rules |
+| SQL Injection Prevention | Eloquent ORM — no raw queries |
+| XSS Prevention | Blade templating auto-escapes all output |
+| CSRF Protection | Laravel CSRF middleware enabled on all POST/PUT/DELETE routes |
+| Authentication | Session-based login with bcrypt password hashing (cost factor 12) |
+| Session Security | HttpOnly, Secure, SameSite cookies — 30-minute timeout |
+| Role-Based Access Control | Custom middleware enforcing Admin and User boundaries |
+| IDOR Prevention | All queries scoped to authenticated user ID |
+| Error Handling | Debug mode off — custom 403, 404, 500 error pages |
+| File Upload Security | MIME type validation, size limits, UUID renaming, stored outside web root |
+| Sensitive Data Protection | Passwords hashed with bcrypt, no credentials in logs |
+| Audit Logging | Failed logins, admin actions, CRUD events, access violations |
+| Dependency Scanning | composer audit + Snyk — all high-severity CVEs resolved |
+| Environment Security | All secrets in .env — excluded from repository via .gitignore |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Tech Stack
 
-## Security Vulnerabilities
+- **Framework:** Laravel 11.x (PHP 8.2)
+- **Database:** MySQL 8.0
+- **Frontend:** Blade templates, Bootstrap 5
+- **Authentication:** Laravel built-in Auth with bcrypt
+- **Testing:** OWASP ZAP (DAST), Snyk (SAST/SCA), composer audit
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Prerequisites
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Make sure the following are installed on your machine before setting up the project:
+
+- PHP 8.2 or higher
+- Composer 2.x
+- MySQL 8.0 or higher
+- Node.js 18.x and npm (for frontend assets)
+- Git
+
+---
+
+## Installation
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/nadyazafirah/secure-task-manager.git
+cd secure-task-manager
+```
+
+**2. Install PHP dependencies**
+
+```bash
+composer install
+```
+
+**3. Install frontend dependencies**
+
+```bash
+npm install
+npm run build
+```
+
+**4. Set up the environment file**
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+**5. Configure your database** — see [Environment Setup](#environment-setup) below.
+
+**6. Run database migrations and seeders**
+
+```bash
+php artisan migrate --seed
+```
+
+---
+
+## Environment Setup
+
+Copy `.env.example` to `.env` and fill in your local values:
+
+```env
+APP_NAME=SecureTaskManager
+APP_ENV=local
+APP_KEY=                        # auto-generated by php artisan key:generate
+APP_DEBUG=false
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=secure_task_manager
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=30
+
+BCRYPT_ROUNDS=12
+```
+
+> **Important:** Never commit your actual `.env` file. It is listed in `.gitignore` and should stay on your local machine only.
+
+---
+
+## Running the Application
+
+Start the Laravel development server:
+
+```bash
+php artisan serve
+```
+
+The application will be available at `http://localhost:8000`.
+
+---
+
+## Default Test Accounts
+
+These accounts are created by the database seeder for evaluation purposes only. Change the passwords immediately in any non-local environment.
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@securetask.com | Admin@1234 |
+| User | user@securetask.com | User@1234 |
+
+---
+
+## Project Structure
+
+```
+secure-task-manager/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/        # Request handling logic
+│   │   └── Middleware/         # RBAC and auth middleware
+│   └── Models/                 # Eloquent models
+├── config/                     # Framework configuration
+├── database/
+│   └── migrations/             # Database schema
+├── resources/
+│   └── views/                  # Blade templates
+├── routes/
+│   └── web.php                 # Application routes
+├── storage/
+│   └── app/uploads/            # User uploads (outside web root)
+├── tests/                      # PHPUnit test files
+├── .env.example                # Environment template (no real secrets)
+├── .gitignore                  # Excludes .env, vendor, node_modules, logs
+├── composer.json               # PHP dependency definitions
+└── README.md                   # This file
+```
+
+---
+
+## Dependencies
+
+Key packages used in this project:
+
+| Package | Version | Purpose |
+|---|---|---|
+| laravel/framework | ^11.0 | Core framework |
+| laravel/sanctum | ^4.0 | API token authentication |
+| spatie/laravel-permission | ^6.0 | RBAC role and permission management |
+| enlightn/security-checker | ^2.0 | Security advisory checking |
+| intervention/image | ^3.0 | Image MIME type validation |
+
+Full dependency list: see `composer.json` and `composer.lock`.
+
+To check for known vulnerabilities:
+
+```bash
+composer audit
+```
+
+---
+
+## Team Members
+
+| Role | Name | Student ID | GitHub |
+|---|---|---|---|
+| Lead Developer (Backend & Core Functionality) | Nadya Zafirah Binti Mohd Fairuz | 52215225256 | @nadyazafirah |
+| Security Tester (Vulnerability Assessment) | Muhammad Amir Haikal Bin Ramli | 52215125796 | @amirhaikal |
+| Mitigation & Compliance Specialist | Mohammed Adam Mirza Bin Fauzan | 52215124370 | @adammirza |
+| DevSecOps & Coordinator | Nurul Jihan Nabilah Binti Azlan | 52215225220 | @jihannabilah |
+
+---
+
+## Course Details
+
+- **Course:** IKB 21503 – Secure Software Development
+- **Campus:** UniKL MIIT
+- **Semester:** 2025/October
+- **Lecturer:** Mdm Mardiana Mahari / Sir Muhammad Bakhtiar Iman Bin Awang
